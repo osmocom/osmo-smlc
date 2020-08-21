@@ -1,0 +1,4 @@
+etc/osmocom/osmo-smlc.cfg
+lib/systemd/system/osmo-smlc.service
+usr/bin/osmo-smlc
+usr/share/doc/osmo-msc/examples/osmo-smlc/osmo-smlc.cfg usr/share/doc/osmo-smlc/examples

@@ -1,0 +1,10 @@
+[[overview]]
+== Overview
+
+This manual should help you getting started with OsmoSMLC. It will cover
+aspects of configuring and running the OsmoSMLC.
+
+[[intro_overview]]
+=== About OsmoSMLC
+
+OsmoSMLC is the Osmocom implementation of a Serving Mobile Location Center.

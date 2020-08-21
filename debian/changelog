@@ -1,0 +1,6 @@
+osmo-smlc (0.0.1) unstable; urgency=medium
+
+  [ Harald Welte ]
+  * initial skeleton
+
+ -- Harald Welte <laforge@osmocom.org>  Fri, 21 Aug 2020 16:02:11 +0200

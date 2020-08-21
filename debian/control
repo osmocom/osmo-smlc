@@ -1,0 +1,54 @@
+Source: osmo-smlc
+Section: net
+Priority: extra
+Maintainer: Osmocom team <openbsc@lists.osmocom.org>
+Build-Depends: debhelper (>=9),
+               dh-autoreconf,
+               autotools-dev,
+               autoconf,
+               automake,
+               libtool,
+               pkg-config,
+               libsctp-dev,
+               libtalloc-dev,
+               libosmocore-dev (>= 1.3.0),
+               libosmo-sccp-dev (>= 1.1.0),
+               libosmo-sigtran-dev (>= 1.1.0),
+               osmo-gsm-manuals-dev (>= 0.2.0)
+Standards-Version: 3.9.8
+Vcs-Git: git://git.osmocom.org/osmo-smlc.git
+Vcs-Browser: https://git.osmocom.org/osmo-smlc/
+Homepage: https://osmocom.org/projects/osmo-smlc
+
+Package: osmo-smlc
+Architecture: any
+Multi-Arch: foreign
+Depends: ${misc:Depends}, ${shlibs:Depends}, libdbd-sqlite3
+Description: OsmoSMLC: Osmocom's Location Services Center
+  FIXME
+  .
+  This Osmocom implementation of the SMLC handles Lb interfaces via 3GPP
+  Lb in an M3UA ASP role.
+
+Package: osmo-smlc-dbg
+Section: debug
+Architecture: any
+Multi-Arch: same
+Depends: osmo-smlc (= ${binary:Version}), ${misc:Depends}
+Description: OsmoSMLC: Osmocom's Location Services Center
+  FIXME
+  .
+  This Osmocom implementation of the SMLC handles Lb interfaces via 3GPP
+  Lb in an M3UA ASP role.
+  .
+  This package contains the debug symbols for osmo-smlc in order to
+  generate meaningful backtraces in bug-reports.
+
+Package: osmo-smlc-doc
+Architecture: all
+Section: doc
+Priority: optional
+Depends: ${misc:Depends}
+Description: ${misc:Package} PDF documentation
+ Various manuals: user manual, VTY reference manual and/or
+ protocol/interface manuals.

@@ -1,0 +1,79 @@
+== Running OsmoSMLC
+
+The OsmoSMLC executable (`osmo-smlc`) offers the following command-line
+arguments:
+
+=== SYNOPSIS
+
+*osmo-smlc* [-h|-V] [-d 'DBGMASK'] [-D] [-c 'CONFIGFILE'] [-s] [-T] [-e 'LOGLEVEL'] [-l 'IP'] [-r 'RFCTL']
+
+=== OPTIONS
+
+*-h, --help*::
+	Print a short help message about the supported options
+*-V, --version*::
+	Print the compile-time version number of the program
+*-d, --debug 'DBGMASK','DBGLEVELS'*::
+	Set the log subsystems and levels for logging to stderr. This
+	has mostly been superseded by VTY-based logging configuration,
+	see <<logging>> for further information.
+*-D, --daemonize*::
+	Fork the process as a daemon into background.
+*-c, --config-file 'CONFIGFILE'*::
+	Specify the file and path name of the configuration file to be
+	used. If none is specified, use `osmo-smlc.cfg` in the current
+	working directory.
+*-e, --log-level 'LOGLEVEL'*::
+	Set the global log level for logging to stderr. This has mostly
+	been deprecated by VTY based logging configuration, see
+	<<logging>> for more information.
+
+=== Multiple instances
+
+Running multiple instances of `osmo-smlc` on the same host is possible if all
+interfaces (VTY, CTRL) are separated using the appropriate configuration
+options. The IP based interfaces are binding to local host by default. In order
+to separate the processes, the user has to bind those services to specific but
+different IP addresses and/or ports.
+
+The VTY and the Control interface can be bound to IP addresses from the loopback
+address range, for example:
+
+----
+line vty
+ bind 127.0.0.2
+ctrl
+ bind 127.0.0.2
+----
+
+For the following links, OsmoSMLC acts as a client and does not listen/bind to a
+specific interface, and will hence not encounter conflicts for multiple instances
+running on the same interface:
+
+- The SCCP/M3UA links are established by OsmoSMLC contacting an STP.
+
+To run multiple OsmoSMLC instances on the same network, each SMLC
+has to configure a distinct point-code. See <<cs7_config>>.
+
+
+=== Configure primary links
+
+==== Connect to an STP
+
+===== Configure SCCP/M3UA (AoIP)
+
+OsmoSMLC acts as client to contact an STP instance and establish an SCCP/M3UA
+link.
+
+An example configuration of OsmoSMLC's Lb SCCP link, assuming the SMLC at
+point-code 1.23.6 via an SG listening for M3UA at 127.0.0.1:2905:
+
+----
+cs7 instance 0
+ point-code 1.23.6
+ asp asp-clnt-msc-0 2905 0 m3ua
+  remote-ip 127.0.0.1
+  sctp-role client
+----
+
+This configuration is explained in detail in <<cs7_config>>.
