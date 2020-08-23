@@ -9,7 +9,7 @@ EXTRA_DIST = \
 if BUILD_MANUALS
   ASCIIDOC = osmosmlc-usermanual.adoc
   include $(OSMO_GSM_MANUALS_DIR)/build/Makefile.asciidoc.inc
-  osmosmlc-usermanual.pdf: $(srcdir)/chapters/*.adoc $(srcdir)/chapters/*.dot
+  osmosmlc-usermanual.pdf: $(srcdir)/chapters/*.adoc #$(srcdir)/chapters/*.dot
 
   VTY_REFERENCE = osmosmlc-vty-reference.xml
 

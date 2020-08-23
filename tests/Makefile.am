@@ -24,6 +24,7 @@ EXTRA_DIST = \
 	$(srcdir)/package.m4 \
 	$(TESTSUITE) \
 	test_nodes.vty \
+	test_nodes.ctrl \
 	$(NULL)
 
 TESTSUITE = $(srcdir)/testsuite
@@ -60,7 +61,7 @@ ctrl-test:
 	-rm -f $(CTRL_TEST_DB)
 	osmo_verify_transcript_ctrl.py -v \
 		-p 4272 \
-		-r "$(top_builddir)/src/osmo-smlc/osmo-smlc -c $(top_srcdir)/doc/examples/osmo-smlc.cfg -l $(CTRL_TEST_DB)" \
+		-r "$(top_builddir)/src/osmo-smlc/osmo-smlc -c $(top_srcdir)/doc/examples/osmo-smlc/osmo-smlc.cfg" \
 		$(U) $(srcdir)/*.ctrl
 	-rm -f $(CTRL_TEST_DB)
 	-rm $(CTRL_TEST_DB)-*
