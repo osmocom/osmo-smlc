@@ -1,0 +1,19 @@
+digraph G {
+rankdir=TB
+labelloc=t; label="Location Request FSM in OsmoSMLC"
+
+	BSC [label="BSC\nvia\nLb interface",shape=box3d]
+
+	subgraph cluster_LOC_REQ_FSM {
+		label="loc_req_fsm"
+		INIT -> WAIT_TA_RESPONSE
+		WAIT_TA_RESPONSE -> GOT_TA_RESPONSE
+		GOT_TA_RESPONSE -> terminate
+		terminate [shape=octagon]
+	}
+
+	BSC -> INIT [label="BSSMAP-LE Perform\nLocation Req",style=dashed]
+	WAIT_TA_RESPONSE -> BSC [label="TA Request",style=dashed]
+	BSC -> WAIT_TA_RESPONSE [label="TA Response",style=dashed]
+	GOT_TA_RESPONSE -> BSC [label="BSSMAP-LE Perform\nLocation Resp",style=dashed]
+}

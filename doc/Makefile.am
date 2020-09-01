@@ -4,6 +4,7 @@ SUBDIRS = \
 	$(NULL)
 
 msc: \
+	$(builddir)/location_request_fsm.png \
 	$(NULL)
 
 dot: \
