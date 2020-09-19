@@ -1,2 +1,9 @@
 AT_INIT
 AT_BANNER([Regression tests.])
+
+AT_SETUP([smlc_subscr])
+AT_KEYWORDS([smlc_subscr])
+cat $abs_srcdir/smlc_subscr/smlc_subscr_test.ok > expout
+cat $abs_srcdir/smlc_subscr/smlc_subscr_test.err > experr
+AT_CHECK([$abs_top_builddir/tests/smlc_subscr/smlc_subscr_test], [], [expout], [experr])
+AT_CLEANUP

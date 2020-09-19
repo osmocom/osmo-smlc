@@ -1,0 +1,12 @@
+Testing SMLC subscriber code.
+Test SMLC subscriber allocation and deletion
+llist_count(&g_smlc->subscribers) == 0
+llist_count(&g_smlc->subscribers) == 1
+llist_count(&g_smlc->subscribers) == 1
+llist_count(&g_smlc->subscribers) == 2
+llist_count(&g_smlc->subscribers) == 3
+llist_count(&g_smlc->subscribers) == 2
+llist_count(&g_smlc->subscribers) == 1
+llist_count(&g_smlc->subscribers) == 1
+llist_count(&g_smlc->subscribers) == 0
+Done

@@ -31,12 +31,15 @@
 #include <osmocom/vty/ports.h>
 #include <osmocom/vty/logging.h>
 #include <osmocom/vty/command.h>
+#include <osmocom/vty/misc.h>
 
 #include <osmocom/sigtran/xua_msg.h>
 #include <osmocom/sigtran/sccp_sap.h>
 
+#include <osmocom/smlc/debug.h>
 #include <osmocom/smlc/smlc_data.h>
-#include <osmocom/smlc/smlc_sigtran.h>
+#include <osmocom/smlc/sccp_lb_inst.h>
+#include <osmocom/smlc/cell_locations.h>
 
 #define _GNU_SOURCE
 #include <getopt.h>
@@ -47,8 +50,11 @@
 #include <time.h>
 #include <unistd.h>
 
-
 #include "../../config.h"
+
+#define DEFAULT_M3UA_LOCAL_IP "localhost"
+#define DEFAULT_M3UA_REMOTE_IP "localhost"
+#define SMLC_DEFAULT_PC "0.23.6"
 
 static const char *config_file = "osmo-smlc.cfg";
 static int daemonize = 0;
@@ -167,6 +173,26 @@ static void signal_handler(int signal)
 }
 
 static const struct log_info_cat smlc_categories[] = {
+	[DSMLC] = {
+		.name = "DSMLC",
+		.description = "Serving Mobile Location Center",
+		.enabled = 1, .loglevel = LOGL_NOTICE,
+	},
+	[DREF] = {
+		.name = "DREF",
+		.description = "Reference Counting",
+		.enabled = 1, .loglevel = LOGL_NOTICE,
+	},
+	[DLB] = {
+		.name = "DLB",
+		.description = "Lb interface",
+		.enabled = 1, .loglevel = LOGL_NOTICE,
+	},
+	[DLCS] = {
+		.name = "DLCS",
+		.description = "Location Services",
+		.enabled = 1, .loglevel = LOGL_NOTICE,
+	},
 };
 
 const struct log_info log_info = {
@@ -177,6 +203,7 @@ const struct log_info log_info = {
 int main(int argc, char **argv)
 {
 	int rc;
+	int default_pc;
 
 	tall_smlc_ctx = talloc_named_const(NULL, 1, "osmo-smlc");
 	msgb_talloc_ctx_init(tall_smlc_ctx, 0);
@@ -190,13 +217,14 @@ int main(int argc, char **argv)
 
 	osmo_fsm_set_dealloc_ctx(OTC_SELECT);
 
-	g_smlc = talloc_zero(tall_smlc_ctx, struct smlc_state);
-	OSMO_ASSERT(g_smlc);
+	g_smlc = smlc_state_alloc(tall_smlc_ctx);
 
 	/* This needs to precede handle_options() */
 	vty_init(&vty_info);
-	//smlc_vty_init(g_smlc);
+	logging_vty_add_cmds();
+	osmo_talloc_vty_add_cmds();
 	ctrl_vty_init(tall_smlc_ctx);
+	cell_locations_vty_init();
 
 	/* Initialize SS7 */
 	OSMO_ASSERT(osmo_ss7_init() == 0);
@@ -235,9 +263,20 @@ int main(int argc, char **argv)
 	}
 	*/
 
-	if (smlc_sigtran_init() != 0) {
-		LOGP(DLB, LOGL_ERROR, "Failed to initialize sigtran backhaul.\n");
-		exit(1);
+	default_pc = osmo_ss7_pointcode_parse(NULL, SMLC_DEFAULT_PC);
+	OSMO_ASSERT(default_pc);
+
+	g_smlc->sccp_inst = osmo_sccp_simple_client_on_ss7_id(g_smlc, 0, "Lb", default_pc, OSMO_SS7_ASP_PROT_M3UA,
+							     0, DEFAULT_M3UA_LOCAL_IP, 0, DEFAULT_M3UA_REMOTE_IP);
+	if (!g_smlc->sccp_inst) {
+		fprintf(stderr, "Setting up SCCP failed\n");
+		return 1;
+	}
+
+	g_smlc->lb = sccp_lb_init(g_smlc, g_smlc->sccp_inst, OSMO_SCCP_SSN_SMLC_BSSAP_LE, "OsmoSMLC-Lb");
+	if (!g_smlc->lb) {
+		fprintf(stderr, "Setting up Lb receiver failed\n");
+		return 1;
 	}
 
 	signal(SIGINT, &signal_handler);

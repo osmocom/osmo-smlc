@@ -212,6 +212,7 @@ AC_OUTPUT(
     src/osmo-smlc/Makefile
     tests/Makefile
     tests/atlocal
+    tests/smlc_subscr/Makefile
     doc/Makefile
     doc/examples/Makefile
     doc/manuals/Makefile

@@ -23,9 +23,15 @@ bin_PROGRAMS = \
 	$(NULL)
 
 osmo_smlc_SOURCES = \
+	cell_locations.c \
+	lb_conn.c \
+	lb_peer.c \
+	sccp_lb_inst.c \
 	smlc_ctrl.c \
+	smlc_data.c \
+	smlc_loc_req.c \
 	smlc_main.c \
-	smlc_sigtran.c \
+	smlc_subscr.c \
 	$(NULL)
 
 osmo_smlc_LDADD = \

@@ -1,0 +1,92 @@
+OsmoSMLC> enable
+
+OsmoSMLC# show cells
+% No cell locations are configured
+
+OsmoSMLC# configure terminal
+
+OsmoSMLC(config)# cells?
+  cells  Configure cell locations
+
+OsmoSMLC(config)# cells
+OsmoSMLC(config-cells)# list
+...
+  lac-ci <0-65535> <0-65535> lat LATITUDE lon LONGITUDE
+  no lac-ci <0-65535> <0-65535>
+  cgi <0-999> <0-999> <0-65535> <0-65535> lat LATITUDE lon LONGITUDE
+  no cgi <0-999> <0-999> <0-65535> <0-65535>
+
+OsmoSMLC(config-cells)# lac-ci?
+  lac-ci  Cell location by LAC and CI
+OsmoSMLC(config-cells)# lac-ci ?
+  <0-65535>  LAC
+OsmoSMLC(config-cells)# lac-ci 23 ?
+  <0-65535>  CI
+OsmoSMLC(config-cells)# lac-ci 23 42 ?
+  lat  Global latitute coordinate
+OsmoSMLC(config-cells)# lac-ci 23 42 lat ?
+  LATITUDE  Latitude floating-point number, -90.0 (S) to 90.0 (N)
+OsmoSMLC(config-cells)# lac-ci 23 42 lat 23.23 ?
+  lon  Global longitude coordinate
+OsmoSMLC(config-cells)# lac-ci 23 42 lat 23.23 lon ?
+  LONGITUDE  Longitude as floating-point number, -180.0 (W) to 180.0 (E)
+OsmoSMLC(config-cells)# lac-ci 23 42 lat 23.23 lon 42.42 ?
+  <cr>  
+
+OsmoSMLC(config-cells)# cgi?
+  cgi  Cell location by Cell-Global ID
+OsmoSMLC(config-cells)# cgi ?
+  <0-999>  MCC
+OsmoSMLC(config-cells)# cgi 001 ?
+  <0-999>  MNC
+OsmoSMLC(config-cells)# cgi 001 02 ?
+  <0-65535>  LAC
+OsmoSMLC(config-cells)# cgi 001 02 3 ?
+  <0-65535>  CI
+OsmoSMLC(config-cells)# cgi 001 02 3 4 ?
+  lat  Global latitute coordinate
+OsmoSMLC(config-cells)# cgi 001 02 3 4 lat ?
+  LATITUDE  Latitude floating-point number, -90.0 (S) to 90.0 (N)
+OsmoSMLC(config-cells)# cgi 001 02 3 4 lat 1.1 ?
+  lon  Global longitude coordinate
+OsmoSMLC(config-cells)# cgi 001 02 3 4 lat 1.1 lon ?
+  LONGITUDE  Longitude as floating-point number, -180.0 (W) to 180.0 (E)
+OsmoSMLC(config-cells)# cgi 001 02 3 4 lat 1.1 lon 2.2 ?
+  <cr>  
+
+OsmoSMLC(config-cells)# lac-ci 23 42 lat 23.23 lon 42.42
+OsmoSMLC(config-cells)# cgi 001 02 3 4 lat 1.1 lon 2.2
+
+OsmoSMLC(config-cells)# do show cells
+cells
+ lac-ci 23 42 lat 23.23 lon 42.42
+ cgi 001 02 3 4 lat 1.1 lon 2.2
+
+OsmoSMLC(config-cells)# show running-config
+...
+cells
+ lac-ci 23 42 lat 23.23 lon 42.42
+ cgi 001 02 3 4 lat 1.1 lon 2.2
+...
+
+OsmoSMLC(config-cells)# no lac-ci 99 99
+% cannot remove, no such entry
+OsmoSMLC(config-cells)# no cgi 009 08 7 6
+% cannot remove, no such entry
+
+OsmoSMLC(config-cells)# do show cells
+cells
+ lac-ci 23 42 lat 23.23 lon 42.42
+ cgi 001 02 3 4 lat 1.1 lon 2.2
+
+OsmoSMLC(config-cells)# lac-ci 23 42 lat 17.17 lon 18.18
+OsmoSMLC(config-cells)# do show cells
+cells
+ lac-ci 23 42 lat 17.17 lon 18.18
+ cgi 001 02 3 4 lat 1.1 lon 2.2
+
+OsmoSMLC(config-cells)# no lac-ci 23 42
+OsmoSMLC(config-cells)# no cgi 001 02 3 4
+
+OsmoSMLC(config-cells)# do show cells
+% No cell locations are configured

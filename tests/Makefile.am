@@ -1,4 +1,5 @@
 SUBDIRS = \
+	smlc_subscr \
 	$(NULL)
 
 # The `:;' works around a Bash 3.2 bug when the output is not writeable.
@@ -25,6 +26,8 @@ EXTRA_DIST = \
 	$(TESTSUITE) \
 	test_nodes.vty \
 	test_nodes.ctrl \
+	cell_locations.vty \
+	osmo-smlc.cfg \
 	$(NULL)
 
 TESTSUITE = $(srcdir)/testsuite
@@ -51,7 +54,7 @@ VTY_TEST ?= *.vty
 vty-test:
 	osmo_verify_transcript_vty.py -v \
 		-n OsmoSMLC -p 4271 \
-		-r "$(top_builddir)/src/osmo-smlc/osmo-smlc -c $(top_srcdir)/doc/examples/osmo-smlc/osmo-smlc.cfg" \
+		-r "$(top_builddir)/src/osmo-smlc/osmo-smlc -c $(top_srcdir)/tests/osmo-smlc.cfg" \
 		$(U) $(srcdir)/$(VTY_TEST)
 
 # To update the CTRL script from current application behavior,
@@ -61,7 +64,7 @@ ctrl-test:
 	-rm -f $(CTRL_TEST_DB)
 	osmo_verify_transcript_ctrl.py -v \
 		-p 4272 \
-		-r "$(top_builddir)/src/osmo-smlc/osmo-smlc -c $(top_srcdir)/doc/examples/osmo-smlc/osmo-smlc.cfg" \
+		-r "$(top_builddir)/src/osmo-smlc/osmo-smlc -c $(top_srcdir)/tests/osmo-smlc.cfg" \
 		$(U) $(srcdir)/*.ctrl
 	-rm -f $(CTRL_TEST_DB)
 	-rm $(CTRL_TEST_DB)-*
