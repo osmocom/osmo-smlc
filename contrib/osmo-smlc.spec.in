@@ -24,6 +24,7 @@ License:        AGPL-3.0-or-later
 Group:          Hardware/Mobile
 URL:            https://osmocom.org/projects/osmo-smlc
 Source:         %{name}-%{version}.tar.xz
+BuildRequires:  autoconf
 BuildRequires:  automake >= 1.9
 BuildRequires:  libtool >= 2
 BuildRequires:  pkgconfig >= 0.20
