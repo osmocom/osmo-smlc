@@ -4,7 +4,7 @@ Description=Osmocom Serving Mobile Location Center (SMLC)
 [Service]
 Type=simple
 Restart=always
-ExecStart=/usr/bin/osmo-smlc -c /etc/osmocom/osmo-smlc.cfg -s
+ExecStart=/usr/bin/osmo-smlc -c /etc/osmocom/osmo-smlc.cfg
 RestartSec=2
 
 [Install]
