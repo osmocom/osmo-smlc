@@ -1,0 +1,11 @@
+== Positioning Methods
+
+So far, OsmoSMLC provides only TA-based positioning.
+
+=== TA-Based Positioning
+
+In TA-based positioning, the serving Cell Id and the Timing Advance (a.k.a.
+Access Delay) are provided by the BSC. OsmoSMLC returns a GAD "ellipsoid point
+with uncertainty circle" as location estimate. The ellipsoid point is the
+latitude and longitude of the serving cell, and the uncertainty circle is the
+maximum distance from that cell based on the Timing Advance information.

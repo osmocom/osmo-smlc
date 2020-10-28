@@ -1,0 +1,26 @@
+== Configure Cell Locations
+
+To determine geographic location estimates based on the serving cell, OsmoSMLC
+needs preconfigured global positions by latitude and longitude, for each cell of
+each BSC.
+
+On the `cells` configuration node, cell locations can be indicated by LAC and
+CI, or by Cell Global Identity. The following example configures the position
+for a cell by LAC 23 and CI 42:
+
+----
+cells
+ lac-ci 23 42 lat 12.3456 lon 23.4567
+----
+
+The following example configures the position by a Cell Global Identity with
+PLMN 001-01, LAC 2 and CI 3:
+
+----
+cells
+ cgi 001 01 2 3 lat 34.5678 lon 45.6789
+----
+
+If a cell's latitude and longitude is not configured, all location requests for
+subscribers served by that cell are answered by a BSSMAP-LE Perform Location
+Response without a Location Estimate and  LCS Cause "Facility not supported".
