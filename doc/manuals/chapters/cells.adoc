@@ -1,3 +1,4 @@
+[[cell-locations]]
 == Configure Cell Locations
 
 To determine geographic location estimates based on the serving cell, OsmoSMLC

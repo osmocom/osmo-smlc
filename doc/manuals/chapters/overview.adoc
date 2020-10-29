@@ -8,3 +8,47 @@ aspects of configuring and running the OsmoSMLC.
 === About OsmoSMLC
 
 OsmoSMLC is the Osmocom implementation of a Serving Mobile Location Center.
+
+A Perform Location Request is initiated by the MSC via BSSMAP on the
+A-interface, for a specific subscriber. The request is typically passed on via
+BSSMAP-LE on the Lb-interface to the SMLC. If required, the SMLC may request the
+subscriber's Timing Advance (a.k.a. Access Delay) from the BSC via BSSLAP
+(encapsulated BSSLAP APDU in a BSSMAP-LE Connection Oriented Information
+message). The SMLC may combine several location and velocity estimate methods to
+form a GAD PDU containing the resulting geographic location information.
+
+So far, OsmoSMLC implements only Timing Advance based positioning. In TA-based
+positioning, the Timing-Advance information received from the BSC is combined
+with the preconfigured latitude and longitude of the serving cell to form a
+location estimate. This is returned to the BSC via the Lb-interface, and in
+turn to the MSC via the A-interface.
+
+Location Services (LCS) are described in 3GPP TS 43.059 <<3gpp-ts-43-059>>.
+Messages for LCS on the A-interface (BSSMAP, between BSC and MSC) are described
+in 3GPP TS 48.008 <<3gpp-ts-48-008>>, on the Lb-interface (BSSMAP-LE between BSC
+and SMLC) in 3GPP TS 49.031 <<3gpp-ts-49-031>>. The resulting geographic
+location and possibly velocity information is encoded in GAD, described in 3GPP
+TS 23.032 <<3gpp-ts-23-032>>.
+
+== Lb Interface
+
+The Lb interface connects BSC to SMLC and consists of BSSMAP-LE/SCCP/M3UA. It
+is routed via an STP instance, as is typical for SCCP. The BSSMAP-LE messages
+may encapsulate BSSLAP and GAD PDUs.
+
+OsmoSMLC by default connects to an STP at 127.0.0.1:2905, and registers with
+its own point-code, default is 0.23.6, on SSN "SMLC (BSSMAP-LE)" (SSN code
+252).
+
+A BSC on an Lb link typically uses SSN "BSC (BSSMAP-LE)" (SSN code 250). Each
+BSC connecting to the SMLC must have a distinct own point-code. OsmoBSC's own
+default point-code is 0.23.3, but when more than one BSC is in use, BSC point
+codes should be configured explicitly.
+
+OsmoSMLC waits for BSC instances to establish Lb interface connections. It does
+not require knowledge of individual BSCs' point-codes (OsmoSMLC does require
+preconfigured cell location information, see <<cell-locations>>).
+
+On establishing the Lb link, a BSC should send a BSSMAP-LE RESET; the Lb link
+is usable for per-subscriber connections as soon as OsmoSMLC responds with a
+BSSMAP-LE RESET ACKNOWLEDGE.
