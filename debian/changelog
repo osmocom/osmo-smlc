@@ -1,3 +1,25 @@
+osmo-smlc (0.2.0) unstable; urgency=medium
+
+  [ Harald Welte ]
+  * contrib/jenkins.sh: Build libosmo-abis, a dependency of libosmo-netif
+  * fix build of usermanual
+  * update vty reference XML
+  * debian/spec: Add build depedency to autoconf-archive
+  * debian: the osmo-smlc example is not in the osmo-msc directory
+  * osmo-smlc.spec.in:  Add dependency to autoconf-archive
+  * fix osmo-smlc.service: drop unknown '-s' command line argument
+
+  [ Neels Hofmeyr ]
+  * initial working osmo-smlc implementation
+  * manual: describe TA-based positioning and cell locations
+
+  [ Pau Espin Pedrol ]
+  * gitignore: Ignore autofoo files *~
+  * main: Support setting cmdline --vty-ref-mode
+  * smlc_subscr_test: Replace use of deprecated log_set_print_filename() API
+
+ -- Pau Espin Pedrol <pespin@sysmocom.de>  Wed, 24 Feb 2021 14:30:56 +0100
+
 osmo-smlc (0.0.1) unstable; urgency=medium
 
   [ Harald Welte ]

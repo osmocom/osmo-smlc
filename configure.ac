@@ -39,12 +39,12 @@ m4_ifdef([AX_CHECK_COMPILE_FLAG], [], [
 	AC_MSG_ERROR([Please install autoconf-archive; re-run 'autoreconf -fi' for it to take effect.])
 	])
 
-PKG_CHECK_MODULES(LIBOSMOCORE, libosmocore >= 1.3.0)
-PKG_CHECK_MODULES(LIBOSMOVTY, libosmovty >= 1.3.0)
-PKG_CHECK_MODULES(LIBOSMOCTRL, libosmoctrl >= 1.3.0)
-PKG_CHECK_MODULES(LIBOSMOGSM, libosmogsm >= 1.3.0)
-PKG_CHECK_MODULES(LIBOSMOSIGTRAN, libosmo-sigtran >= 0.10.0)
-PKG_CHECK_MODULES(LIBOSMOSCCP, libosmo-sccp >= 0.10.0)
+PKG_CHECK_MODULES(LIBOSMOCORE, libosmocore >= 1.5.0)
+PKG_CHECK_MODULES(LIBOSMOVTY, libosmovty >= 1.5.0)
+PKG_CHECK_MODULES(LIBOSMOCTRL, libosmoctrl >= 1.5.0)
+PKG_CHECK_MODULES(LIBOSMOGSM, libosmogsm >= 1.5.0)
+PKG_CHECK_MODULES(LIBOSMOSIGTRAN, libosmo-sigtran >= 1.4.0)
+PKG_CHECK_MODULES(LIBOSMOSCCP, libosmo-sccp >= 1.4.0)
 
 dnl checks for header files
 AC_HEADER_STDC
