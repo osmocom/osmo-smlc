@@ -186,14 +186,14 @@ static int sccp_lb_sap_down(struct sccp_lb_inst *sli, struct osmo_prim_hdr *oph)
 {
 	int rc;
 	if (!sli->scu) {
-		rate_ctr_inc(&g_smlc->ctrs->ctr[SMLC_CTR_BSSMAP_LE_TX_ERR_CONN_NOT_READY]);
+		rate_ctr_inc(rate_ctr_group_get_ctr(g_smlc->ctrs, SMLC_CTR_BSSMAP_LE_TX_ERR_CONN_NOT_READY));
 		return -EIO;
 	}
 	rc = osmo_sccp_user_sap_down_nofree(sli->scu, oph);
 	if (rc >= 0)
-		rate_ctr_inc(&g_smlc->ctrs->ctr[SMLC_CTR_BSSMAP_LE_TX_SUCCESS]);
+		rate_ctr_inc(rate_ctr_group_get_ctr(g_smlc->ctrs, SMLC_CTR_BSSMAP_LE_TX_SUCCESS));
 	else
-		rate_ctr_inc(&g_smlc->ctrs->ctr[SMLC_CTR_BSSMAP_LE_TX_ERR_SEND]);
+		rate_ctr_inc(rate_ctr_group_get_ctr(g_smlc->ctrs, SMLC_CTR_BSSMAP_LE_TX_ERR_SEND));
 	return rc;
 }
 

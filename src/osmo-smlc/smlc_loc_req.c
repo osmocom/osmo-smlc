@@ -96,7 +96,7 @@ static int smlc_loc_req_start(struct lb_conn *lb_conn, const struct bssmap_le_pe
 {
 	struct smlc_loc_req *smlc_loc_req;
 
-	rate_ctr_inc(&g_smlc->ctrs->ctr[SMLC_CTR_BSSMAP_LE_RX_DT1_PERFORM_LOCATION_REQUEST]);
+	rate_ctr_inc(rate_ctr_group_get_ctr(g_smlc->ctrs, SMLC_CTR_BSSMAP_LE_RX_DT1_PERFORM_LOCATION_REQUEST));
 
 	if (lb_conn->smlc_loc_req) {
 		/* Another request is already pending. If we send Perform Location Abort, the peer doesn't know which
