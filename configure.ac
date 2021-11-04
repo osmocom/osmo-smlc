@@ -34,11 +34,6 @@ if test "x$PKG_CONFIG_INSTALLED" = "xno"; then
 fi
 PKG_PROG_PKG_CONFIG([0.20])
 
-dnl check for AX_CHECK_COMPILE_FLAG
-m4_ifdef([AX_CHECK_COMPILE_FLAG], [], [
-	AC_MSG_ERROR([Please install autoconf-archive; re-run 'autoreconf -fi' for it to take effect.])
-	])
-
 PKG_CHECK_MODULES(LIBOSMOCORE, libosmocore >= 1.5.0)
 PKG_CHECK_MODULES(LIBOSMOVTY, libosmovty >= 1.5.0)
 PKG_CHECK_MODULES(LIBOSMOCTRL, libosmoctrl >= 1.5.0)
@@ -91,13 +86,6 @@ AC_COMPILE_IFELSE([AC_LANG_SOURCE([char foo;])],
         AC_MSG_RESULT([no]))
 CFLAGS="$saved_CFLAGS"
 AC_SUBST(SYMBOL_VISIBILITY)
-
-AX_CHECK_COMPILE_FLAG([-Werror=implicit], [CFLAGS="$CFLAGS -Werror=implicit"])
-AX_CHECK_COMPILE_FLAG([-Werror=maybe-uninitialized], [CFLAGS="$CFLAGS -Werror=maybe-uninitialized"])
-AX_CHECK_COMPILE_FLAG([-Werror=memset-transposed-args], [CFLAGS="$CFLAGS -Werror=memset-transposed-args"])
-AX_CHECK_COMPILE_FLAG([-Wnull-dereference], [CFLAGS="$CFLAGS -Wnull-dereference"])
-AX_CHECK_COMPILE_FLAG([-Werror=sizeof-array-argument], [CFLAGS="$CFLAGS -Werror=sizeof-array-argument"])
-AX_CHECK_COMPILE_FLAG([-Werror=sizeof-pointer-memaccess], [CFLAGS="$CFLAGS -Werror=sizeof-pointer-memaccess"])
 
 # Coverage build taken from WebKit's configure.in
 AC_MSG_CHECKING([whether to enable code coverage support])
