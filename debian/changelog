@@ -1,3 +1,13 @@
+osmo-smlc (0.2.1) unstable; urgency=medium
+
+  [ Pau Espin Pedrol ]
+  * Use new stat item/ctr getter APIs
+
+  [ Oliver Smith ]
+  * configure: don't turn some warnings into errors
+
+ -- Pau Espin Pedrol <pespin@sysmocom.de>  Tue, 16 Nov 2021 18:14:21 +0100
+
 osmo-smlc (0.2.0) unstable; urgency=medium
 
   [ Harald Welte ]
