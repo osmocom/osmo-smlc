@@ -20,7 +20,7 @@ EXTRA_DIST = \
 	smlc_subscr_test.err \
 	$(NULL)
 
-noinst_PROGRAMS = \
+check_PROGRAMS = \
 	smlc_subscr_test \
 	$(NULL)
 
