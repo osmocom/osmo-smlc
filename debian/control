@@ -16,8 +16,8 @@ Build-Depends: debhelper (>=9),
                libosmo-sigtran-dev (>= 1.5.0),
                osmo-gsm-manuals-dev (>= 1.2.0)
 Standards-Version: 3.9.8
-Vcs-Git: git://git.osmocom.org/osmo-smlc.git
-Vcs-Browser: https://git.osmocom.org/osmo-smlc/
+Vcs-Git: https://gitea.osmocom.org/cellular-infrastructure/osmo-smlc
+Vcs-Browser: https://gitea.osmocom.org/cellular-infrastructure/osmo-smlc
 Homepage: https://osmocom.org/projects/osmo-smlc
 
 Package: osmo-smlc
