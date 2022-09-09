@@ -4,6 +4,8 @@ Description=Osmocom Serving Mobile Location Center (SMLC)
 [Service]
 Type=simple
 Restart=always
+StateDirectory=osmocom
+WorkingDirectory=%S/osmocom
 ExecStart=/usr/bin/osmo-smlc -c /etc/osmocom/osmo-smlc.cfg
 RestartSec=2
 
