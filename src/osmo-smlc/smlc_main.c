@@ -268,8 +268,7 @@ int main(int argc, char **argv)
 
 	/* start control interface after reading config for
 	 * ctrl_vty_get_bind_addr() */
-	g_smlc->ctrl = ctrl_interface_setup_dynip2(g_smlc, ctrl_vty_get_bind_addr(), OSMO_CTRL_PORT_SMLC,
-						   smlc_ctrl_node_lookup, _LAST_CTRL_NODE_SMLC);
+	g_smlc->ctrl = ctrl_interface_setup2(g_smlc, OSMO_CTRL_PORT_SMLC, smlc_ctrl_node_lookup, _LAST_CTRL_NODE_SMLC);
 	if (!g_smlc->ctrl) {
 		fprintf(stderr, "Failed to init the control interface. Exiting.\n");
 		exit(1);
