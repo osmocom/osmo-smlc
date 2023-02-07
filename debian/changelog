@@ -1,3 +1,15 @@
+osmo-smlc (0.2.3) unstable; urgency=medium
+
+  [ Vadim Yanitskiy ]
+  * contrib/jenkins.sh: execute distcheck/maintainer-clean with $PARALLEL_MAKE
+
+  [ Max ]
+  * Add git-review config
+  * Set working directory in systemd service file
+  * ctrl: take both address and port from vty config
+
+ -- Pau Espin Pedrol <pespin@sysmocom.de>  Tue, 07 Feb 2023 17:42:00 +0100
+
 osmo-smlc (0.2.2) unstable; urgency=medium
 
   [ Oliver Smith ]
