@@ -262,7 +262,7 @@ int main(int argc, char **argv)
 	}
 
 	/* Start telnet interface after reading config for vty_get_bind_addr() */
-	rc = telnet_init_dynif(tall_smlc_ctx, g_smlc, vty_get_bind_addr(), OSMO_VTY_PORT_SMLC);
+	rc = telnet_init_default(tall_smlc_ctx, g_smlc, OSMO_VTY_PORT_SMLC);
 	if (rc < 0)
 		exit(1);
 
