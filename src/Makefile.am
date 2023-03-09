@@ -14,12 +14,6 @@ AM_CFLAGS = \
 	$(COVERAGE_CFLAGS) \
 	$(NULL)
 
-AM_LDFLAGS = \
-	$(LIBOSMOCORE_LIBS) \
-	$(LIBOSMOGSM_LIBS) \
-	$(COVERAGE_LDFLAGS) \
-	$(NULL)
-
 SUBDIRS = \
 	osmo-smlc \
 	$(NULL)
