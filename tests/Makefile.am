@@ -37,11 +37,11 @@ DISTCLEANFILES = \
 	$(NULL)
 
 if ENABLE_EXT_TESTS
-python-tests: $(BUILT_SOURCES)
+python-tests:
 	$(MAKE) vty-test
 	$(MAKE) ctrl-test
 else
-python-tests: $(BUILT_SOURCES)
+python-tests:
 	echo "Not running python-based tests (determined at configure-time)"
 endif
 
@@ -51,7 +51,7 @@ VTY_TEST ?= *.vty
 # To update the VTY script from current application behavior,
 # pass -u to vty_script_runner.py by doing:
 #   make vty-test U=-u
-vty-test:
+vty-test: $(top_builddir)/src/osmo-smlc/osmo-smlc
 	osmo_verify_transcript_vty.py -v \
 		-n OsmoSMLC -p 4271 \
 		-r "$(top_builddir)/src/osmo-smlc/osmo-smlc -c $(top_srcdir)/tests/osmo-smlc.cfg" \
@@ -60,7 +60,7 @@ vty-test:
 # To update the CTRL script from current application behavior,
 # pass -u to ctrl_script_runner.py by doing:
 #   make ctrl-test U=-u
-ctrl-test:
+ctrl-test: $(top_builddir)/src/osmo-smlc/osmo-smlc
 	-rm -f $(CTRL_TEST_DB)
 	osmo_verify_transcript_ctrl.py -v \
 		-p 4272 \
