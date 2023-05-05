@@ -63,13 +63,10 @@ vty-test: $(top_builddir)/src/osmo-smlc/osmo-smlc
 # pass -u to ctrl_script_runner.py by doing:
 #   make ctrl-test U=-u
 ctrl-test: $(top_builddir)/src/osmo-smlc/osmo-smlc
-	-rm -f $(CTRL_TEST_DB)
 	osmo_verify_transcript_ctrl.py -v \
 		-p 4272 \
 		-r "$(top_builddir)/src/osmo-smlc/osmo-smlc -c $(top_srcdir)/tests/osmo-smlc.cfg" \
 		$(U) $(srcdir)/*.ctrl
-	-rm -f $(CTRL_TEST_DB)
-	-rm $(CTRL_TEST_DB)-*
 
 check-local: atconfig $(TESTSUITE)
 	$(SHELL) '$(TESTSUITE)' $(TESTSUITEFLAGS)
