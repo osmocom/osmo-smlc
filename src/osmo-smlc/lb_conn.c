@@ -1,7 +1,7 @@
 /* SMLC Lb connection implementation */
 
 /*
- * (C) 2020 by sysmocom s.m.f.c. <info@sysmocom.de>
+ * (C) 2020 by sysmocom s.f.m.c. <info@sysmocom.de>
  * All Rights Reserved
  *
  * Author: Neels Hofmeyr
