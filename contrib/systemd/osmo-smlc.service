@@ -1,5 +1,7 @@
 [Unit]
 Description=Osmocom Serving Mobile Location Center (SMLC)
+After=network-online.target
+Wants=network-online.target
 
 [Service]
 Type=simple
