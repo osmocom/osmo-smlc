@@ -1,3 +1,29 @@
+osmo-smlc (0.2.4) unstable; urgency=medium
+
+  [ arehbein ]
+  * Transition to use of 'telnet_init_default'
+
+  [ Vadim Yanitskiy ]
+  * configure.ac: set -std=gnu11
+  * Makefile.am: remove $(COVERAGE_LDFLAGS) from osmo_smlc_LDADD
+  * Makefile.am: remove unneeded AM_LDFLAGS with LIBS
+  * tests: $(BUILT_SOURCES) is not defined, depend on osmo-smlc
+  * tests: execute osmotest{vty,config}.py against osmo-smlc
+  * copyright: fix typo: sysmocom s/s.m.f.c./s.f.m.c./ GmbH
+  * configure.ac: migrate from python2 to python3
+
+  [ Oliver Smith ]
+  * debian: set compat level to 10
+  * systemd: depend on networking-online.target
+
+  [ Neels Janosch Hofmeyr ]
+  * ctrl-test: drop bogus 'rm -f $(CTRL_TEST_DB)'
+
+  [ Pau Espin Pedrol ]
+  * Write explicit role & sctp-role fields in ASP configurations
+
+ -- Pau Espin Pedrol <pespin@sysmocom.de>  Tue, 12 Sep 2023 17:14:41 +0200
+
 osmo-smlc (0.2.3) unstable; urgency=medium
 
   [ Vadim Yanitskiy ]
