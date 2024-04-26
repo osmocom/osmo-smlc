@@ -23,7 +23,7 @@ Homepage: https://osmocom.org/projects/osmo-smlc
 Package: osmo-smlc
 Architecture: any
 Multi-Arch: foreign
-Depends: ${misc:Depends}, ${shlibs:Depends}, libdbd-sqlite3, adduser
+Depends: ${misc:Depends}, ${shlibs:Depends}, libdbd-sqlite3
 Description: OsmoSMLC: Osmocom's Location Services Center
   FIXME
   .
