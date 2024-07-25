@@ -1,3 +1,22 @@
+osmo-smlc (0.3.0) unstable; urgency=medium
+
+  [ Andreas Eversberg ]
+  * Use uniform log format for default config files
+
+  [ Vadim Yanitskiy ]
+  * build: include README.md into the release tarball
+  * README.md: cosmetic: fix a typo
+
+  [ Max ]
+  * .deb/.rpm: add osmocom user during package install
+
+  [ Oliver Smith ]
+  * .deb/.rpm: various fixes related to non-root
+  * contrib: remove rpm spec file
+  * debian/postinst: add checks, be verbose
+
+ -- Oliver Smith <osmith@sysmocom.de>  Thu, 25 Jul 2024 09:49:50 +0200
+
 osmo-smlc (0.2.4) unstable; urgency=medium
 
   [ arehbein ]
