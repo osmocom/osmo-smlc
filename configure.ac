@@ -40,7 +40,7 @@ PKG_CHECK_MODULES(LIBOSMOCORE, libosmocore >= 1.10.0)
 PKG_CHECK_MODULES(LIBOSMOVTY, libosmovty >= 1.10.0)
 PKG_CHECK_MODULES(LIBOSMOCTRL, libosmoctrl >= 1.10.0)
 PKG_CHECK_MODULES(LIBOSMOGSM, libosmogsm >= 1.10.0)
-PKG_CHECK_MODULES(LIBOSMOSIGTRAN, libosmo-sigtran >= 1.9.0)
+PKG_CHECK_MODULES(LIBOSMOSIGTRAN, libosmo-sigtran >= 2.0.0)
 
 dnl checks for header files
 AC_HEADER_STDC
