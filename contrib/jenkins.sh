@@ -32,7 +32,7 @@ export LD_LIBRARY_PATH="$inst/lib"
 export PATH="$inst/bin:$PATH"
 
 osmo-build-dep.sh libosmo-netif "" --disable-doxygen
-osmo-build-dep.sh libosmo-sigtran
+osmo-build-dep.sh libosmo-sigtran "" --disable-doxygen
 
 # Additional configure options and depends
 CONFIG=""
