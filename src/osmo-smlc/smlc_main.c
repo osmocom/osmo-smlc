@@ -35,6 +35,7 @@
 
 #include <osmocom/sigtran/xua_msg.h>
 #include <osmocom/sigtran/sccp_sap.h>
+#include <osmocom/sigtran/osmo_ss7.h>
 
 #include <osmocom/smlc/debug.h>
 #include <osmocom/smlc/smlc_data.h>
@@ -170,6 +171,7 @@ static struct vty_app_info vty_info = {
 	"This is free software: you are free to change and redistribute it.\r\n"
 	"There is NO WARRANTY, to the extent permitted by law.\r\n",
 	.version	= PACKAGE_VERSION,
+	.go_parent_cb	= osmo_ss7_vty_go_parent,
 };
 
 static void signal_handler(int signal)
