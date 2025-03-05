@@ -1,3 +1,15 @@
+osmo-smlc (0.3.2) unstable; urgency=medium
+
+  [ Oliver Smith ]
+  * contrib/jenkins: libosmo-abis after libosmo-netif
+
+  [ Pau Espin Pedrol ]
+  * jenkins.sh: Skip building unneeded libosmo-abis
+  * jenkins.sh: No need to build libosmo-sigtran with doxygen
+  * Add missing required vty go_parent_cb for libosmo-sigtran
+
+ -- Oliver Smith <osmith@sysmocom.de>  Wed, 05 Mar 2025 11:35:11 +0100
+
 osmo-smlc (0.3.1) unstable; urgency=medium
 
   [ Harald Welte ]
