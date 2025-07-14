@@ -32,6 +32,7 @@ osmo_smlc_SOURCES = \
 	smlc_loc_req.c \
 	smlc_main.c \
 	smlc_subscr.c \
+	smlc_vty.c \
 	$(NULL)
 
 osmo_smlc_LDADD = \

@@ -19,7 +19,6 @@
 #include <osmocom/ctrl/control_cmd.h>
 #include <osmocom/ctrl/control_if.h>
 #include <osmocom/ctrl/ports.h>
-#include <osmocom/ctrl/control_vty.h>
 
 #include <osmocom/core/application.h>
 #include <osmocom/core/linuxlist.h>
@@ -29,9 +28,6 @@
 #include <osmocom/core/rate_ctr.h>
 #include <osmocom/vty/telnet_interface.h>
 #include <osmocom/vty/ports.h>
-#include <osmocom/vty/logging.h>
-#include <osmocom/vty/command.h>
-#include <osmocom/vty/misc.h>
 
 #include <osmocom/sigtran/xua_msg.h>
 #include <osmocom/sigtran/sccp_sap.h>
@@ -40,7 +36,7 @@
 #include <osmocom/smlc/debug.h>
 #include <osmocom/smlc/smlc_data.h>
 #include <osmocom/smlc/sccp_lb_inst.h>
-#include <osmocom/smlc/cell_locations.h>
+#include <osmocom/smlc/smlc_vty.h>
 
 #define _GNU_SOURCE
 #include <getopt.h>
@@ -241,17 +237,11 @@ int main(int argc, char **argv)
 
 	g_smlc = smlc_state_alloc(tall_smlc_ctx);
 
-	/* This needs to precede handle_options() */
-	vty_init(&vty_info);
-	logging_vty_add_cmds();
-	osmo_talloc_vty_add_cmds();
-	ctrl_vty_init(tall_smlc_ctx);
-	cell_locations_vty_init();
-
 	/* Initialize SS7 */
 	OSMO_ASSERT(osmo_ss7_init() == 0);
-	osmo_ss7_vty_init_asp(tall_smlc_ctx);
-	osmo_sccp_vty_init();
+
+	/* This needs to precede handle_options() */
+	smlc_vty_init(&vty_info);
 
 	/* parse options */
 	handle_options(argc, argv);
