@@ -88,7 +88,7 @@ static const struct osmo_tdef_state_timeout lb_peer_fsm_timeouts[32] = {
 #define lb_peer_state_chg(LB_PEER, NEXT_STATE) \
 	osmo_tdef_fsm_inst_state_chg((LB_PEER)->fi, NEXT_STATE, lb_peer_fsm_timeouts, g_smlc_tdefs, 5)
 
-void lb_peer_discard_all_conns(struct lb_peer *lbp)
+static void lb_peer_discard_all_conns(struct lb_peer *lbp)
 {
 	struct lb_conn *lb_conn, *next;
 
@@ -137,7 +137,7 @@ static void lb_peer_rx_reset_ack(struct lb_peer *lbp, struct msgb* msg)
 	lb_peer_state_chg(lbp, LB_PEER_ST_READY);
 }
 
-void lb_peer_reset(struct lb_peer *lbp)
+static void lb_peer_reset(struct lb_peer *lbp)
 {
 	struct bssap_le_pdu reset = {
 		.discr = BSSAP_LE_MSG_DISCR_BSSMAP_LE,
@@ -167,7 +167,18 @@ void lb_peer_reset(struct lb_peer *lbp)
 	}
 }
 
-void lb_peer_allstate_action(struct osmo_fsm_inst *fi, uint32_t event, void *data)
+static void lb_peer_disconnect(struct sccp_lb_inst *sli, uint32_t conn_id)
+{
+	struct lb_conn *lb_conn;
+	llist_for_each_entry(lb_conn, &sli->lb_conns, entry) {
+		if (lb_conn->sccp_conn_id == conn_id) {
+			lb_conn_discard(lb_conn);
+			return;
+		}
+	}
+}
+
+static void lb_peer_allstate_action(struct osmo_fsm_inst *fi, uint32_t event, void *data)
 {
 	struct lb_peer *lbp = fi->priv;
 	struct lb_peer_ev_ctx *ctx = data;
@@ -196,7 +207,7 @@ void lb_peer_allstate_action(struct osmo_fsm_inst *fi, uint32_t event, void *dat
 	}
 }
 
-void lb_peer_st_wait_rx_reset(struct osmo_fsm_inst *fi, uint32_t event, void *data)
+static void lb_peer_st_wait_rx_reset(struct osmo_fsm_inst *fi, uint32_t event, void *data)
 {
 	struct lb_peer *lbp = fi->priv;
 	struct lb_peer_ev_ctx *ctx;
@@ -230,7 +241,7 @@ void lb_peer_st_wait_rx_reset(struct osmo_fsm_inst *fi, uint32_t event, void *da
 	}
 }
 
-void lb_peer_st_wait_rx_reset_ack(struct osmo_fsm_inst *fi, uint32_t event, void *data)
+static void lb_peer_st_wait_rx_reset_ack(struct osmo_fsm_inst *fi, uint32_t event, void *data)
 {
 	struct lb_peer *lbp = fi->priv;
 	struct lb_peer_ev_ctx *ctx;
@@ -265,7 +276,7 @@ void lb_peer_st_wait_rx_reset_ack(struct osmo_fsm_inst *fi, uint32_t event, void
 	}
 }
 
-void lb_peer_st_ready(struct osmo_fsm_inst *fi, uint32_t event, void *data)
+static void lb_peer_st_ready(struct osmo_fsm_inst *fi, uint32_t event, void *data)
 {
 	struct lb_peer *lbp = fi->priv;
 	struct lb_peer_ev_ctx *ctx;
@@ -336,7 +347,7 @@ static int lb_peer_fsm_timer_cb(struct osmo_fsm_inst *fi)
 	return 0;
 }
 
-void lb_peer_fsm_cleanup(struct osmo_fsm_inst *fi, enum osmo_fsm_term_cause cause)
+static void lb_peer_fsm_cleanup(struct osmo_fsm_inst *fi, enum osmo_fsm_term_cause cause)
 {
 	struct lb_peer *lbp = fi->priv;
 	lb_peer_discard_all_conns(lbp);
@@ -481,15 +492,4 @@ int lb_peer_up_l2(struct sccp_lb_inst *sli, const struct osmo_sccp_addr *calling
 		event = LB_PEER_EV_MSG_UP_CL;
 
 	return osmo_fsm_inst_dispatch(lb_peer->fi, event, &ctx);
-}
-
-void lb_peer_disconnect(struct sccp_lb_inst *sli, uint32_t conn_id)
-{
-	struct lb_conn *lb_conn;
-	llist_for_each_entry(lb_conn, &sli->lb_conns, entry) {
-		if (lb_conn->sccp_conn_id == conn_id) {
-			lb_conn_discard(lb_conn);
-			return;
-		}
-	}
 }

@@ -64,4 +64,3 @@ struct lb_peer *lb_peer_find(const struct sccp_lb_inst *sli, const struct osmo_s
 
 int lb_peer_up_l2(struct sccp_lb_inst *sli, const struct osmo_sccp_addr *calling_addr, bool co, uint32_t conn_id,
 		  struct msgb *l2);
-void lb_peer_disconnect(struct sccp_lb_inst *sli, uint32_t conn_id);
