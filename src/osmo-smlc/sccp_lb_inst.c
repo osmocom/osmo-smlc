@@ -1,5 +1,5 @@
 /*
- * (C) 2020 by sysmocom - s.f.m.c. GmbH <info@sysmocom.de>
+ * (C) 2020-2025 by sysmocom - s.f.m.c. GmbH <info@sysmocom.de>
  * All Rights Reserved
  *
  * SPDX-License-Identifier: AGPL-3.0+
@@ -85,6 +85,96 @@ struct sccp_lb_inst *sccp_lb_init(void *talloc_ctx, struct osmo_sccp_instance *s
 	return sli;
 }
 
+static void handle_pcstate_ind(struct sccp_lb_inst *sli, const struct osmo_scu_pcstate_param *pcst)
+{
+	struct osmo_ss7_instance *cs7 = osmo_sccp_get_ss7(sli->sccp);
+	struct lb_peer *lbp;
+	bool connected;
+	bool disconnected;
+
+	LOG_SCCP_LB(sli, LOGL_DEBUG, "N-PCSTATE ind: affected_pc=%u=%s sp_status=%s remote_sccp_status=%s\n",
+		    pcst->affected_pc, osmo_ss7_pointcode_print(cs7, pcst->affected_pc),
+		    osmo_sccp_sp_status_name(pcst->sp_status),
+		    osmo_sccp_rem_sccp_status_name(pcst->remote_sccp_status));
+
+	/* If we don't care about that point-code, ignore PCSTATE. */
+	lbp = lb_peer_find_by_pc(sli, pcst->affected_pc);
+	if (!lbp) {
+		LOG_SCCP_LB(sli, LOGL_DEBUG, "No lb_peer found under pc=%u=%s\n",
+			    pcst->affected_pc, osmo_ss7_pointcode_print(cs7, pcst->affected_pc));
+		return;
+	}
+
+	/* See if this marks the point code to have become available, or to have been lost.
+	 *
+	 * I want to detect two events:
+	 * - connection event (both indicators say PC is reachable).
+	 * - disconnection event (at least one indicator says the PC is not reachable).
+	 *
+	 * There are two separate incoming indicators with various possible values -- the incoming events can be:
+	 *
+	 * - neither connection nor disconnection indicated -- just indicating congestion
+	 *   connected == false, disconnected == false --> do nothing.
+	 * - both incoming values indicate that we are connected
+	 *   --> trigger connected
+	 * - both indicate we are disconnected
+	 *   --> trigger disconnected
+	 * - one value indicates 'connected', the other indicates 'disconnected'
+	 *   --> trigger disconnected
+	 *
+	 * Congestion could imply that we're connected, but it does not indicate that a PC's reachability changed, so no need to
+	 * trigger on that.
+	 */
+	connected = false;
+	disconnected = false;
+
+	switch (pcst->sp_status) {
+	case OSMO_SCCP_SP_S_ACCESSIBLE:
+		connected = true;
+		break;
+	case OSMO_SCCP_SP_S_INACCESSIBLE:
+		disconnected = true;
+		break;
+	default:
+	case OSMO_SCCP_SP_S_CONGESTED:
+		/* Neither connecting nor disconnecting */
+		break;
+	}
+
+	switch (pcst->remote_sccp_status) {
+	case OSMO_SCCP_REM_SCCP_S_AVAILABLE:
+		if (!disconnected)
+			connected = true;
+		break;
+	case OSMO_SCCP_REM_SCCP_S_UNAVAILABLE_UNKNOWN:
+	case OSMO_SCCP_REM_SCCP_S_UNEQUIPPED:
+	case OSMO_SCCP_REM_SCCP_S_INACCESSIBLE:
+		disconnected = true;
+		connected = false;
+		break;
+	default:
+	case OSMO_SCCP_REM_SCCP_S_CONGESTED:
+		/* Neither connecting nor disconnecting */
+		break;
+	}
+
+	if (disconnected) {
+		LOG_SCCP_LB(sli, LOGL_NOTICE,
+			    "now unreachable: N-PCSTATE ind: pc=%u=%s sp_status=%s remote_sccp_status=%s\n",
+			    pcst->affected_pc, osmo_ss7_pointcode_print(cs7, pcst->affected_pc),
+			    osmo_sccp_sp_status_name(pcst->sp_status),
+			    osmo_sccp_rem_sccp_status_name(pcst->remote_sccp_status));
+		osmo_fsm_inst_dispatch(lbp->fi, LB_PEER_EV_UNAVAILABLE, NULL);
+	} else if (connected) {
+		LOG_SCCP_LB(sli, LOGL_NOTICE,
+			    "now available: N-PCSTATE ind: pc=%u=%s sp_status=%s remote_sccp_status=%s\n",
+			    pcst->affected_pc, osmo_ss7_pointcode_print(cs7, pcst->affected_pc),
+			    osmo_sccp_sp_status_name(pcst->sp_status),
+			    osmo_sccp_rem_sccp_status_name(pcst->remote_sccp_status));
+		osmo_fsm_inst_dispatch(lbp->fi, LB_PEER_EV_AVAILABLE, NULL);
+	}
+}
+
 static int sccp_lb_sap_up(struct osmo_prim_hdr *oph, void *_scu)
 {
 	struct osmo_sccp_user *scu = _scu;
@@ -161,6 +251,19 @@ static int sccp_lb_sap_up(struct osmo_prim_hdr *oph, void *_scu)
 					osmo_sccp_inst_addr_to_str_c(OTC_SELECT, sli->sccp, &sli->local_sccp_addr));
 
 		rc = lb_peer_up_l2(sli, peer_addr, false, 0, oph->msg);
+		break;
+
+	case OSMO_PRIM(OSMO_SCU_PRIM_N_PCSTATE, PRIM_OP_INDICATION):
+		handle_pcstate_ind(sli, &prim->u.pcstate);
+		rc = 0;
+		break;
+
+	case OSMO_PRIM(OSMO_SCU_PRIM_N_STATE, PRIM_OP_INDICATION):
+		LOG_SCCP_LB(sli, LOGL_INFO,
+			    "SCCP-User-SAP: Ignoring %s.%s\n",
+			    osmo_scu_prim_type_name(oph->primitive),
+			    get_value_string(osmo_prim_op_names, oph->operation));
+		rc = 0;
 		break;
 
 	default:

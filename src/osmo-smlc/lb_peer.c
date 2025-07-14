@@ -1,5 +1,5 @@
 /*
- * (C) 2019 by sysmocom - s.f.m.c. GmbH <info@sysmocom.de>
+ * (C) 2019-2025 by sysmocom - s.f.m.c. GmbH <info@sysmocom.de>
  * All Rights Reserved
  *
  * SPDX-License-Identifier: AGPL-3.0+
@@ -78,6 +78,15 @@ struct lb_peer *lb_peer_find(const struct sccp_lb_inst *sli, const struct osmo_s
 		return lbp;
 	}
 	return NULL;
+}
+
+/* Find an lb_peer by its remote SCCP address */
+struct lb_peer *lb_peer_find_by_pc(const struct sccp_lb_inst *sli, uint32_t pc)
+{
+	struct osmo_sccp_addr rem_addr;
+
+	osmo_sccp_make_addr_pc_ssn(&rem_addr, pc, OSMO_SCCP_SSN_BSC_BSSAP_LE);
+	return lb_peer_find(sli, &rem_addr);
 }
 
 static const struct osmo_tdef_state_timeout lb_peer_fsm_timeouts[32] = {
@@ -235,6 +244,15 @@ static void lb_peer_st_wait_rx_reset(struct osmo_fsm_inst *fi, uint32_t event, v
 		lb_peer_rx_reset(lbp, msg);
 		return;
 
+	case LB_PEER_EV_AVAILABLE:
+		/* Send a RESET to the peer. */
+		lb_peer_reset(lbp);
+		return;
+
+	case LB_PEER_EV_UNAVAILABLE:
+		/* Do nothing, wait for peer to come up again. */
+		return;
+
 	default:
 		LOG_LB_PEER(lbp, LOGL_ERROR, "Unhandled event: %s\n", osmo_fsm_event_name(&lb_peer_fsm, event));
 		return;
@@ -268,6 +286,15 @@ static void lb_peer_st_wait_rx_reset_ack(struct osmo_fsm_inst *fi, uint32_t even
 	case LB_PEER_EV_RX_RESET:
 		msg = (struct msgb*)data;
 		lb_peer_rx_reset(lbp, msg);
+		return;
+
+	case LB_PEER_EV_AVAILABLE:
+		/* Send a RESET to the peer. */
+		lb_peer_reset(lbp);
+		return;
+
+	case LB_PEER_EV_UNAVAILABLE:
+		lb_peer_state_chg(lbp, LB_PEER_ST_WAIT_RX_RESET);
 		return;
 
 	default:
@@ -334,6 +361,16 @@ static void lb_peer_st_ready(struct osmo_fsm_inst *fi, uint32_t event, void *dat
 		lb_peer_rx_reset(lbp, msg);
 		return;
 
+	case LB_PEER_EV_AVAILABLE:
+		/* Send a RESET to the peer. */
+		lb_peer_reset(lbp);
+		return;
+
+	case LB_PEER_EV_UNAVAILABLE:
+		lb_peer_discard_all_conns(lbp);
+		lb_peer_state_chg(lbp, LB_PEER_ST_WAIT_RX_RESET);
+		return;
+
 	default:
 		LOG_LB_PEER(lbp, LOGL_ERROR, "Unhandled event: %s\n", osmo_fsm_event_name(&lb_peer_fsm, event));
 		return;
@@ -363,6 +400,8 @@ static const struct value_string lb_peer_fsm_event_names[] = {
 	OSMO_VALUE_STRING(LB_PEER_EV_MSG_DOWN_CO),
 	OSMO_VALUE_STRING(LB_PEER_EV_RX_RESET),
 	OSMO_VALUE_STRING(LB_PEER_EV_RX_RESET_ACK),
+	OSMO_VALUE_STRING(LB_PEER_EV_AVAILABLE),
+	OSMO_VALUE_STRING(LB_PEER_EV_UNAVAILABLE),
 	{}
 };
 
@@ -376,6 +415,8 @@ static const struct osmo_fsm_state lb_peer_fsm_states[] = {
 			| S(LB_PEER_EV_RX_RESET)
 			| S(LB_PEER_EV_MSG_UP_CO_INITIAL)
 			| S(LB_PEER_EV_MSG_UP_CO)
+			| S(LB_PEER_EV_AVAILABLE)
+			| S(LB_PEER_EV_UNAVAILABLE)
 			,
 		.out_state_mask = 0
 			| S(LB_PEER_ST_WAIT_RX_RESET)
@@ -392,6 +433,8 @@ static const struct osmo_fsm_state lb_peer_fsm_states[] = {
 			| S(LB_PEER_EV_RX_RESET_ACK)
 			| S(LB_PEER_EV_MSG_UP_CO_INITIAL)
 			| S(LB_PEER_EV_MSG_UP_CO)
+			| S(LB_PEER_EV_AVAILABLE)
+			| S(LB_PEER_EV_UNAVAILABLE)
 			,
 		.out_state_mask = 0
 			| S(LB_PEER_ST_WAIT_RX_RESET)
@@ -410,6 +453,8 @@ static const struct osmo_fsm_state lb_peer_fsm_states[] = {
 			| S(LB_PEER_EV_MSG_DOWN_CO_INITIAL)
 			| S(LB_PEER_EV_MSG_DOWN_CO)
 			| S(LB_PEER_EV_MSG_DOWN_CL)
+			| S(LB_PEER_EV_AVAILABLE)
+			| S(LB_PEER_EV_UNAVAILABLE)
 			,
 		.out_state_mask = 0
 			| S(LB_PEER_ST_WAIT_RX_RESET)
