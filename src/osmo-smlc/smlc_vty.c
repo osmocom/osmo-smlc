@@ -23,6 +23,8 @@
 #include <osmocom/ctrl/control_vty.h>
 #include <osmocom/vty/logging.h>
 #include <osmocom/vty/misc.h>
+#include <osmocom/vty/stats.h>
+#include <osmocom/vty/vty.h>
 
 #include <osmocom/sigtran/osmo_ss7.h>
 #include <osmocom/sigtran/sccp_sap.h>
@@ -37,6 +39,7 @@ void smlc_vty_init(struct vty_app_info *vty_app_info)
 	osmo_talloc_vty_add_cmds();
 	ctrl_vty_init(vty_app_info->tall_ctx);
 	osmo_fsm_vty_add_cmds();
+	osmo_stats_vty_add_cmds();
 
 	osmo_ss7_vty_init_asp(vty_app_info->tall_ctx);
 	osmo_sccp_vty_init();

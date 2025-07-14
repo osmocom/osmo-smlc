@@ -23,6 +23,7 @@
 #include <osmocom/core/linuxlist.h>
 #include <osmocom/core/logging.h>
 #include <osmocom/core/fsm.h>
+#include <osmocom/core/stat_item.h>
 #include <osmocom/gsm/bssmap_le.h>
 #include <osmocom/sigtran/sccp_helpers.h>
 
@@ -57,6 +58,7 @@ static struct lb_peer *lb_peer_alloc(struct sccp_lb_inst *sli, const struct osmo
 	fi->priv = lbp;
 
 	llist_add(&lbp->entry, &sli->lb_peers);
+	osmo_stat_item_inc(osmo_stat_item_group_get_item(g_smlc->statg, SMLC_STAT_LB_PEERS_TOTAL), 1);
 
 	return lbp;
 }
@@ -303,6 +305,12 @@ static void lb_peer_st_wait_rx_reset_ack(struct osmo_fsm_inst *fi, uint32_t even
 	}
 }
 
+static void lb_peer_st_ready_onenter(struct osmo_fsm_inst *fi, uint32_t prev_state)
+{
+	if (prev_state != LB_PEER_ST_READY)
+		osmo_stat_item_inc(osmo_stat_item_group_get_item(g_smlc->statg, SMLC_STAT_LB_PEERS_ACTIVE), 1);
+}
+
 static void lb_peer_st_ready(struct osmo_fsm_inst *fi, uint32_t event, void *data)
 {
 	struct lb_peer *lbp = fi->priv;
@@ -377,6 +385,12 @@ static void lb_peer_st_ready(struct osmo_fsm_inst *fi, uint32_t event, void *dat
 	}
 }
 
+static void lb_peer_st_ready_onleave(struct osmo_fsm_inst *fi, uint32_t next_state)
+{
+	if (next_state != LB_PEER_ST_READY)
+		osmo_stat_item_dec(osmo_stat_item_group_get_item(g_smlc->statg, SMLC_STAT_LB_PEERS_ACTIVE), 1);
+}
+
 static int lb_peer_fsm_timer_cb(struct osmo_fsm_inst *fi)
 {
 	struct lb_peer *lbp = fi->priv;
@@ -384,10 +398,17 @@ static int lb_peer_fsm_timer_cb(struct osmo_fsm_inst *fi)
 	return 0;
 }
 
+/* struct lb_peer destructor: */
 static void lb_peer_fsm_cleanup(struct osmo_fsm_inst *fi, enum osmo_fsm_term_cause cause)
 {
 	struct lb_peer *lbp = fi->priv;
+
 	lb_peer_discard_all_conns(lbp);
+
+	if (lbp->fi->state == LB_PEER_ST_READY)
+		osmo_stat_item_dec(osmo_stat_item_group_get_item(g_smlc->statg, SMLC_STAT_LB_PEERS_ACTIVE), 1);
+	osmo_stat_item_dec(osmo_stat_item_group_get_item(g_smlc->statg, SMLC_STAT_LB_PEERS_TOTAL), 1);
+
 	llist_del(&lbp->entry);
 }
 
@@ -446,6 +467,8 @@ static const struct osmo_fsm_state lb_peer_fsm_states[] = {
 	[LB_PEER_ST_READY] = {
 		.name = "READY",
 		.action = lb_peer_st_ready,
+		.onenter = lb_peer_st_ready_onenter,
+		.onleave = lb_peer_st_ready_onleave,
 		.in_event_mask = 0
 			| S(LB_PEER_EV_RX_RESET)
 			| S(LB_PEER_EV_MSG_UP_CO_INITIAL)

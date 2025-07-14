@@ -54,6 +54,19 @@ static const struct rate_ctr_group_desc smlc_ctrg_desc = {
 	smlc_ctr_description,
 };
 
+static const struct osmo_stat_item_desc smlc_stat_item_description[] = {
+	[SMLC_STAT_LB_PEERS_TOTAL]	= { "lb_peers.total", "Total Lb peers seen since startup", OSMO_STAT_ITEM_NO_UNIT, 4, 0},
+	[SMLC_STAT_LB_PEERS_ACTIVE]	= { "lb_peers.active", "Currently active Lb peers", OSMO_STAT_ITEM_NO_UNIT, 4, 0},
+};
+
+static const struct osmo_stat_item_group_desc smlc_statg_desc = {
+	"smlc",
+	"serving mobile location center",
+	OSMO_STATS_CLASS_GLOBAL,
+	ARRAY_SIZE(smlc_stat_item_description),
+	smlc_stat_item_description,
+};
+
 struct smlc_state *smlc_state_alloc(void *ctx)
 {
 	struct smlc_state *smlc = talloc_zero(ctx, struct smlc_state);
@@ -61,5 +74,14 @@ struct smlc_state *smlc_state_alloc(void *ctx)
 	INIT_LLIST_HEAD(&smlc->subscribers);
 	INIT_LLIST_HEAD(&smlc->cell_locations);
 	smlc->ctrs = rate_ctr_group_alloc(smlc, &smlc_ctrg_desc, 0);
+
+	smlc->statg = osmo_stat_item_group_alloc(smlc, &smlc_statg_desc, 0);
+	if (!smlc->statg)
+		goto ret_free;
 	return smlc;
+
+ret_free:
+	rate_ctr_group_free(smlc->ctrs);
+	talloc_free(smlc);
+	return NULL;
 }
