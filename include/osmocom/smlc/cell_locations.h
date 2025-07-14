@@ -23,7 +23,7 @@
 
 #include <stdint.h>
 #include <osmocom/core/linuxlist.h>
-#include <osmocom/sigtran/sccp_sap.h>
+#include <osmocom/gsm/gsm0808_utils.h>
 
 struct osmo_gad;
 
