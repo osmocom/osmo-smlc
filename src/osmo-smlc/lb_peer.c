@@ -69,7 +69,7 @@ struct lb_peer *lb_peer_find_or_create(struct sccp_lb_inst *sli, const struct os
 	return lb_peer_alloc(sli, peer_addr);
 }
 
-struct lb_peer *lb_peer_find(struct sccp_lb_inst *sli, const struct osmo_sccp_addr *peer_addr)
+struct lb_peer *lb_peer_find(const struct sccp_lb_inst *sli, const struct osmo_sccp_addr *peer_addr)
 {
 	struct lb_peer *lbp;
 	llist_for_each_entry(lbp, &sli->lb_peers, entry) {

@@ -60,7 +60,7 @@ struct lb_peer_ev_ctx {
 };
 
 struct lb_peer *lb_peer_find_or_create(struct sccp_lb_inst *sli, const struct osmo_sccp_addr *peer_addr);
-struct lb_peer *lb_peer_find(struct sccp_lb_inst *sli, const struct osmo_sccp_addr *peer_addr);
+struct lb_peer *lb_peer_find(const struct sccp_lb_inst *sli, const struct osmo_sccp_addr *peer_addr);
 
 int lb_peer_up_l2(struct sccp_lb_inst *sli, const struct osmo_sccp_addr *calling_addr, bool co, uint32_t conn_id,
 		  struct msgb *l2);
