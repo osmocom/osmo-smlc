@@ -49,8 +49,6 @@ enum lb_peer_event {
 	LB_PEER_EV_MSG_DOWN_CO,
 	LB_PEER_EV_RX_RESET,
 	LB_PEER_EV_RX_RESET_ACK,
-	LB_PEER_EV_CONNECTION_SUCCESS,
-	LB_PEER_EV_CONNECTION_TIMEOUT,
 };
 
 struct lb_peer_ev_ctx {
