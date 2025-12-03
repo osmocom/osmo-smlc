@@ -1,3 +1,16 @@
+osmo-smlc (0.4.0) unstable; urgency=medium
+
+  * lb_peer: Constify ptr arg in lb_peer_find()
+  * lb_peer: Mark multiple funcs as static
+  * lb_peer: Drop unused events CONNECTION_{SUCCESS,TIMEOUT}
+  * cell_locations.h: Fix includes
+  * vty: Create smlc_vty.c
+  * smlc: Initial implementation of N-PCSTATE.ind
+  * Introduce stats msc.ran_peers.{total,active}
+  * sccp: Handle N-NOTICE.ind (Routing Failure of SCCP CL messages)
+
+ -- Pau Espin Pedrol <pespin@sysmocom.de>  Wed, 03 Dec 2025 19:46:14 +0100
+
 osmo-smlc (0.3.2) unstable; urgency=medium
 
   [ Oliver Smith ]
