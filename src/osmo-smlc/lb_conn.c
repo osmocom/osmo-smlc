@@ -173,7 +173,9 @@ void lb_conn_close(struct lb_conn *lb_conn)
 
 	if (lb_conn->lb_peer) {
 		/* Todo: pass a useful SCCP cause? */
-		sccp_lb_disconnect(lb_conn->lb_peer->sli, lb_conn->sccp_conn_id, 0);
+		sccp_lb_disconnect(lb_conn->lb_peer->sli,
+				   lb_conn->sccp_conn_id,
+				   OSMO_SCCP_REL_REASON_NSU_DISC_NORMAL);
 		lb_conn->lb_peer = NULL;
 	}
 

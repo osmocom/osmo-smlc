@@ -280,7 +280,8 @@ static void lb_peer_st_wait_rx_reset_ack(struct osmo_fsm_inst *fi, uint32_t even
 		OSMO_ASSERT(ctx);
 		LOG_LB_PEER(lbp, LOGL_ERROR, "Receiving CO message on Lb peer that has not done a proper RESET yet."
 			     " Disconnecting on incoming message, sending RESET to Lb peer.\n");
-		sccp_lb_disconnect(lbp->sli, ctx->conn_id, 0);
+		sccp_lb_disconnect(lbp->sli, ctx->conn_id,
+				   OSMO_SCCP_REL_REASON_NSU_DISC_END_USER_FAILURE);
 		/* No valid RESET procedure has happened here yet. */
 		lb_peer_reset(lbp);
 		return;

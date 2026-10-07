@@ -60,4 +60,4 @@ int sccp_lb_down_l2_co_initial(struct sccp_lb_inst *sli,
 int sccp_lb_down_l2_co(struct sccp_lb_inst *sli, uint32_t conn_id, struct msgb *l2);
 int sccp_lb_down_l2_cl(struct sccp_lb_inst *sli, const struct osmo_sccp_addr *called_addr, struct msgb *l2);
 
-int sccp_lb_disconnect(struct sccp_lb_inst *sli, uint32_t conn_id, uint32_t cause);
+int sccp_lb_disconnect(struct sccp_lb_inst *sli, uint32_t conn_id, enum osmo_sccp_release_reason_nsu reason);

@@ -240,7 +240,8 @@ static int sccp_lb_sap_up(struct osmo_prim_hdr *oph, void *_scu)
 
 		rc = lb_peer_up_l2(sli, peer_addr, true, conn_id, oph->msg);
 		if (rc)
-			osmo_sccp_tx_disconn(scu, conn_id, my_addr, SCCP_RETURN_CAUSE_UNQUALIFIED);
+			osmo_sccp_tx_disconn(scu, conn_id, my_addr,
+					     OSMO_SCCP_REL_REASON_NSU_CREF_END_USER_ORIGIN);
 		break;
 
 	case OSMO_PRIM(OSMO_SCU_PRIM_N_DATA, PRIM_OP_INDICATION):
@@ -265,7 +266,8 @@ static int sccp_lb_sap_up(struct osmo_prim_hdr *oph, void *_scu)
 		/* Make sure the lb_conn is dropped. It might seem more optimal to combine the disconnect() into
 		 * up_l2(), but since an up_l2() dispatch might already cause the lb_conn to be discarded for other
 		 * reasons, a separate disconnect() with a separate conn_id lookup is actually necessary. */
-		sccp_lb_disconnect(sli, conn_id, 0);
+		sccp_lb_disconnect(sli, conn_id,
+				   OSMO_SCCP_REL_REASON_NSU_DISC_SCCP_USER_ORIGIN);
 		break;
 
 	case OSMO_PRIM(OSMO_SCU_PRIM_N_UNITDATA, PRIM_OP_INDICATION):
@@ -385,7 +387,7 @@ int sccp_lb_down_l2_cl(struct sccp_lb_inst *sli, const struct osmo_sccp_addr *ca
 	return sccp_lb_sap_down(sli, &prim->oph);
 }
 
-int sccp_lb_disconnect(struct sccp_lb_inst *sli, uint32_t conn_id, uint32_t cause)
+int sccp_lb_disconnect(struct sccp_lb_inst *sli, uint32_t conn_id, enum osmo_sccp_release_reason_nsu reason)
 {
-	return osmo_sccp_tx_disconn(sli->scu, conn_id, NULL, cause);
+	return osmo_sccp_tx_disconn(sli->scu, conn_id, NULL, reason);
 }
